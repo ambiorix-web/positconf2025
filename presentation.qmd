@@ -2,9 +2,15 @@
 title: "Ambiorix"
 subtitle: "Reimagining R for the Web"
 author:
-  - "John Coene"
-  - "Kennedy Mwavu"
-format: revealjs
+  - name: "John Coene"
+    email: "john@opifex.org"
+    affiliations: "https://opifex.org/"
+  - name: "Kennedy Mwavu"
+    email: "mwavukennedy@gmail.com"
+    affiliations: "https://mwavu.com/"
+format:
+  clean-revealjs:
+    self-contained: true
 ---
 
 ## Who are we?
