@@ -1,0 +1,143 @@
+---
+title: "Ambiorix"
+subtitle: "Reimagining R for the Web"
+author:
+  - "John Coene"
+  - "Kennedy Mwavu"
+format: revealjs
+---
+
+## Who are we?
+
+- John: created Ambiorix (2020)
+- Kennedy: maintainer & contributor
+- This is Ambiorix's first conf appearance
+
+---
+
+## What is Ambiorix?
+
+- Web framework for R
+- Build UI + APIs in R
+- Think: `shiny + plumber`, but rethought
+
+---
+
+## Why should you care?
+
+- Fine-grained control over HTTP
+- Express-style routing
+- Middleware support
+- Build for the web, the way the web works
+
+---
+
+## A moment for Shiny
+
+- Shiny is brilliant
+- Designed for interactive R dashboards
+- Ambiorix isn’t trying to replace Shiny
+- We're exploring a different interface: request → response
+
+---
+
+## Core Idea: Request-Response
+
+- Every input is a request
+- You control the response
+- Ambiorix gives you full access to the HTTP cycle
+
+---
+
+## Hello World
+
+```r
+library(ambiorix)
+
+app <- Ambiorix$new()
+
+app$get("/", function(req, res) {
+  res$send("Hello from Ambiorix!")
+})
+
+app$start()
+```
+
+- That’s all you need
+- Feels like JavaScript’s Express
+
+---
+
+## Build APIs too
+
+- Route JSON responses
+- Work with `req$body`, `req$query`, `req$params` etc
+- Great for building backend APIs in R
+
+---
+
+## Example: API Endpoint
+
+```r
+app$post("/add", function(req, res) {
+  req_data <- req$parse_multipart(req)
+  x <- as.numeric(req_data$x)
+  y <- as.numeric(req_data$y)
+
+  result <- list(
+    sum = x + y,
+    message = "Success",
+    code = 200L
+  )
+
+  res$json(resp)
+})
+```
+
+- All R
+- You write the logic
+
+---
+
+## Use cases?
+
+- Build frontend+backend in R
+- Lightweight dashboards with HTML + JS
+- APIs powering JS widgets or R clients
+- Glue between R and the web
+
+---
+
+## Why not just use Django, Express, etc?
+
+- You know R
+- You want to stay in R
+- You can deploy with tools you already use
+
+---
+
+## Live apps
+
+- [rrr.is](https://rrr.is/): URL shortener
+- [mwavu.com](https://mwavu.com/): Personal Website
+
+Talk of eating your own dog food :)
+
+## More examples
+
+- [ambiorix.dev/docs/examples](https://ambiorix.dev/docs/examples/)
+
+---
+
+## Try it out
+
+- GitHub: [ambiorix-web/ambiorix](https://github.com/ambiorix-web/ambiorix)
+- Website: [ambiorix.dev](https://ambiorix.dev)
+- Easy to get started
+- Tutorials and examples included
+
+---
+
+## Thanks!
+
+- Questions?
