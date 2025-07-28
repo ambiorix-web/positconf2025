@@ -34,10 +34,17 @@ format:
 
 ---
 
+## Is it?
+
+![](./is-this-shiny-2.0.jpg)
+
+NO.
+
+---
+
 ## A moment for Shiny
 
-- Shiny is brilliant
-- Designed for interactive R dashboards
+- Shiny is brilliant (Pun intended)
 - Ambiorix isn’t trying to replace Shiny
   - Provides a different interface: **request → response**
   - Appeal to a different set of useRs
@@ -45,11 +52,19 @@ format:
 - Both are based on the same underlying package: [{httpuv}](https://github.com/rstudio/httpuv),
 but follow different principles on how to develop applications.
 
-Single Page Applications | Multi-Page Applications
-Pre-built UI components  | No pre-built components
-Use bootstrap & JQuery by default | Use whatever you wish
-Reactive framework is built-in | No reactivity by default
-Uses websockets by default | Uses HTTP requests by default
+## Comparison
+
+Shiny: Batteries plugged in. Plug n Play.
+
+Ambiorix: Build [everything] from *scratch*.
+
+| Shiny | Ambiorix |
+|-------|----------|
+| Single Page Applications | Multi-Page Applications |
+| Pre-built UI components | No pre-built components |
+| Bootstrap & jQuery by default | Use whatever you wish |
+| Reactive framework built-in | No reactivity by default |
+| WebSockets by default | HTTP requests by default |
 
 ---
 
@@ -106,7 +121,7 @@ app$post("/add", function(req, res) {
     code = 200L
   )
 
-  res$json(resp)
+  res$json(result)
 })
 ```
 
@@ -115,31 +130,16 @@ app$post("/add", function(req, res) {
 
 ---
 
-## Use cases?
+## Examples
 
-- Build frontend+backend in R
-- Lightweight dashboards with HTML + JS
-- APIs powering JS widgets or R clients
-- Glue between R and the web
-
----
-
-## Why not just use Django, Express, etc?
-
-- You know R
-- You want to stay in R
-- You can deploy with tools you already use
-
----
-
-## Live apps
+Live apps:
 
 - [rrr.is](https://rrr.is/): URL shortener
 - [mwavu.com](https://mwavu.com/): Personal Website
 
 Talk of eating your own dog food :)
 
-## More examples
+More examples in the docs:
 
 - [ambiorix.dev/docs/examples](https://ambiorix.dev/docs/examples/)
 
