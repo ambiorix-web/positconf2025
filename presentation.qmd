@@ -1,40 +1,36 @@
 ---
 title: "Ambiorix"
-subtitle: "Reimagining R for the Web"
+subtitle: "Build for the web, the way the web works"
 author:
   - name: "John Coene"
     email: "john@opifex.org"
-    affiliations: "https://opifex.org/"
+    url: "https://opifex.org/"
+    affiliations: "Created Ambiorix (2020)"
   - name: "Kennedy Mwavu"
     email: "mwavukennedy@gmail.com"
-    affiliations: "https://mwavu.com/"
+    url: "https://mwavu.com/"
+    affiliations: "Maintainer & Contributor"
 format:
   clean-revealjs:
     self-contained: true
 ---
 
-## Who are we?
+## Intro
 
-- John: created Ambiorix (2020)
-- Kennedy: maintainer & contributor
-- This is Ambiorix's first conf appearance
+- Ambiorix is a web framework for R
 
----
+- Build web applications & APIs
 
-## What is Ambiorix?
-
-- Web framework for R
-- Build UI + APIs in R
-- Think: `shiny + plumber`, but rethought
+- Heavily inspired by [Express JS](https://expressjs.com/)
 
 ---
 
 ## Why should you care?
 
 - Fine-grained control over HTTP
-- Express-style routing
+- Routing
+  - Multipages out of the box :)
 - Middleware support
-- Build for the web, the way the web works
 
 ---
 
@@ -43,15 +39,30 @@ format:
 - Shiny is brilliant
 - Designed for interactive R dashboards
 - Ambiorix isn’t trying to replace Shiny
-- We're exploring a different interface: request → response
+  - Provides a different interface: **request → response**
+  - Appeal to a different set of useRs
+
+- Both are based on the same underlying package: [{httpuv}](https://github.com/rstudio/httpuv),
+but follow different principles on how to develop applications.
+
+Single Page Applications | Multi-Page Applications
+Pre-built UI components  | No pre-built components
+Use bootstrap & JQuery by default | Use whatever you wish
+Reactive framework is built-in | No reactivity by default
+Uses websockets by default | Uses HTTP requests by default
 
 ---
 
-## Core Idea: Request-Response
+## Request-Response Cycle
+
+This is the **core idea** of ambiorix.
 
 - Every input is a request
 - You control the response
 - Ambiorix gives you full access to the HTTP cycle
+  1. Client makes a request to the server.
+  1. Server handles the request
+  1. Server sends back a response to the client
 
 ---
 
@@ -70,7 +81,6 @@ app$start()
 ```
 
 - That’s all you need
-- Feels like JavaScript’s Express
 
 ---
 

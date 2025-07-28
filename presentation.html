@@ -1210,57 +1210,51 @@ margin-right: 0; }
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Ambiorix</h1>
-  <p class="subtitle">Reimagining R for the Web</p>
+  <p class="subtitle">Build for the web, the way the web works</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-John Coene 
+<a href="https://opifex.org/">John Coene</a> 
 </div>
 <div class="quarto-title-author-email">
 <a href="mailto:john@opifex.org">john@opifex.org</a>
 </div>
         <p class="quarto-title-affiliation">
-            https://opifex.org/
+            Created Ambiorix (2020)
           </p>
     </div>
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Kennedy Mwavu 
+<a href="https://mwavu.com/">Kennedy Mwavu</a> 
 </div>
 <div class="quarto-title-author-email">
 <a href="mailto:mwavukennedy@gmail.com">mwavukennedy@gmail.com</a>
 </div>
         <p class="quarto-title-affiliation">
-            https://mwavu.com/
+            Maintainer &amp; Contributor
           </p>
     </div>
 </div>
 
 </section>
-<section id="who-are-we" class="slide level2">
-<h2>Who are we?</h2>
+<section id="intro" class="slide level2">
+<h2>Intro</h2>
 <ul>
-<li>John: created Ambiorix (2020)</li>
-<li>Kennedy: maintainer &amp; contributor</li>
-<li>This is Ambiorix’s first conf appearance</li>
-</ul>
-</section>
-<section id="what-is-ambiorix" class="slide level2">
-<h2>What is Ambiorix?</h2>
-<ul>
-<li>Web framework for R</li>
-<li>Build UI + APIs in R</li>
-<li>Think: <code>shiny + plumber</code>, but rethought</li>
+<li><p>Ambiorix is a web framework for R</p></li>
+<li><p>Build web applications &amp; APIs</p></li>
+<li><p>Heavily inspired by <a href="https://expressjs.com/">Express JS</a></p></li>
 </ul>
 </section>
 <section id="why-should-you-care" class="slide level2">
 <h2>Why should you care?</h2>
 <ul>
 <li>Fine-grained control over HTTP</li>
-<li>Express-style routing</li>
+<li>Routing
+<ul>
+<li>Multipages out of the box :)</li>
+</ul></li>
 <li>Middleware support</li>
-<li>Build for the web, the way the web works</li>
 </ul>
 </section>
 <section id="a-moment-for-shiny" class="slide level2">
@@ -1268,16 +1262,27 @@ Kennedy Mwavu
 <ul>
 <li>Shiny is brilliant</li>
 <li>Designed for interactive R dashboards</li>
-<li>Ambiorix isn’t trying to replace Shiny</li>
-<li>We’re exploring a different interface: request → response</li>
+<li>Ambiorix isn’t trying to replace Shiny
+<ul>
+<li>Provides a different interface: <strong>request → response</strong></li>
+<li>Appeal to a different set of useRs</li>
+</ul></li>
+<li>Both are based on the same underlying package: <a href="https://github.com/rstudio/httpuv">{httpuv}</a>, but follow different principles on how to develop applications.</li>
 </ul>
+<p>Single Page Applications | Multi-Page Applications Pre-built UI components | No pre-built components Use bootstrap &amp; JQuery by default | Use whatever you wish Reactive framework is built-in | No reactivity by default Uses websockets by default | Uses HTTP requests by default</p>
 </section>
-<section id="core-idea-request-response" class="slide level2">
-<h2>Core Idea: Request-Response</h2>
+<section id="request-response-cycle" class="slide level2">
+<h2>Request-Response Cycle</h2>
+<p>This is the <strong>core idea</strong> of ambiorix.</p>
 <ul>
 <li>Every input is a request</li>
 <li>You control the response</li>
-<li>Ambiorix gives you full access to the HTTP cycle</li>
+<li>Ambiorix gives you full access to the HTTP cycle
+<ol type="1">
+<li>Client makes a request to the server.</li>
+<li>Server handles the request</li>
+<li>Server sends back a response to the client</li>
+</ol></li>
 </ul>
 </section>
 <section id="hello-world" class="slide level2">
@@ -1293,7 +1298,6 @@ Kennedy Mwavu
 <span id="cb1-9"><a href></a>app<span class="sc">$</span><span class="fu">start</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
 <li>That’s all you need</li>
-<li>Feels like JavaScript’s Express</li>
 </ul>
 </section>
 <section id="build-apis-too" class="slide level2">
