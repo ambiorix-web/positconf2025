@@ -52,6 +52,8 @@ NO.
 - Both are based on the same underlying package: [{httpuv}](https://github.com/rstudio/httpuv),
 but follow different principles on how to develop applications.
 
+---
+
 ## Comparison
 
 Shiny: Batteries plugged in. Plug n Play.
@@ -72,12 +74,13 @@ Ambiorix: Build [everything] from *scratch*.
 
 This is the **core idea** of ambiorix.
 
-- Every input is a request
-- You control the response
-- Ambiorix gives you full access to the HTTP cycle
-  1. Client makes a request to the server.
-  1. Server handles the request
-  1. Server sends back a response to the client
+- Full access to the HTTP cycle
+
+  ```
+  Client → Request → Server → Response → Client
+    ↑                                      ↓
+    └──────── HTTP Cycle ──────────────────┘
+  ```
 
 ---
 
@@ -99,49 +102,67 @@ app$start()
 
 ---
 
-## Build APIs too
+## Request Object Structure
 
-- Route JSON responses
-- Work with `req$body`, `req$query`, `req$params` etc
-- Great for building backend APIs in R
+```r
+# Route parameters: /users/:id
+req$params$id
+
+# Query strings: /search?q=term&limit=10
+req$query$q
+req$query$limit
+
+# Request body (JSON)
+req$parse_json()
+
+# Request body (multipart)
+req$parse_multipart()
+```
 
 ---
 
-## Example: API Endpoint
+## Route Parameters
 
 ```r
-app$post("/add", function(req, res) {
-  req_data <- req$parse_multipart(req)
-  x <- as.numeric(req_data$x)
-  y <- as.numeric(req_data$y)
+# Define dynamic routes
+app$get("/users/:id", function(req, res) {
+  user_id <- req$params$id
 
-  result <- list(
-    sum = x + y,
-    message = "Success",
-    code = 200L
+  user_data <- list(
+    id = user_id,
+    name = "John Doe",
+    email = paste0("user", user_id, "@example.com")
   )
 
-  res$json(result)
+  res$json(user_data)
 })
 ```
 
-- All R
-- You write the logic
+- `/users/123` → `req$params$id` = "123"
+- `/users/456` → `req$params$id` = "456"
 
 ---
 
-## Examples
+## Middleware
 
-Live apps:
+```r
+# Define middleware
+log_requests <- function(req, res) {
+  cat("[LOG]", req$REQUEST_METHOD, req$PATH_INFO, "\n")
+}
 
-- [rrr.is](https://rrr.is/): URL shortener
-- [mwavu.com](https://mwavu.com/): Personal Website
+# Use middleware
+app$use(log_requests)
 
-Talk of eating your own dog food :)
+# Middleware with parameters
+app$use(function(req, res) {
+  req$timestamp <- Sys.time()
+})
+```
 
-More examples in the docs:
-
-- [ambiorix.dev/docs/examples](https://ambiorix.dev/docs/examples/)
+- Runs **before** route handlers
+- Modify request object
+- Add authentication, logging, etc.
 
 ---
 

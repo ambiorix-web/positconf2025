@@ -1313,70 +1313,79 @@ margin-right: 0; }
 <h2>Request-Response Cycle</h2>
 <p>This is the <strong>core idea</strong> of ambiorix.</p>
 <ul>
-<li>Every input is a request</li>
-<li>You control the response</li>
-<li>Ambiorix gives you full access to the HTTP cycle
-<ol type="1">
-<li>Client makes a request to the server.</li>
-<li>Server handles the request</li>
-<li>Server sends back a response to the client</li>
-</ol></li>
+<li><p>Full access to the HTTP cycle</p>
+<pre><code>Client → Request → Server → Response → Client
+  ↑                                      ↓
+  └──────── HTTP Cycle ──────────────────┘</code></pre></li>
 </ul>
 </section>
 <section id="hello-world" class="slide level2">
 <h2>Hello World</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href></a><span class="fu">library</span>(ambiorix)</span>
-<span id="cb1-2"><a href></a></span>
-<span id="cb1-3"><a href></a>app <span class="ot">&lt;-</span> Ambiorix<span class="sc">$</span><span class="fu">new</span>()</span>
-<span id="cb1-4"><a href></a></span>
-<span id="cb1-5"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/&quot;</span>, <span class="cf">function</span>(req, res) {</span>
-<span id="cb1-6"><a href></a>  res<span class="sc">$</span><span class="fu">send</span>(<span class="st">&quot;Hello from Ambiorix!&quot;</span>)</span>
-<span id="cb1-7"><a href></a>})</span>
-<span id="cb1-8"><a href></a></span>
-<span id="cb1-9"><a href></a>app<span class="sc">$</span><span class="fu">start</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href></a><span class="fu">library</span>(ambiorix)</span>
+<span id="cb2-2"><a href></a></span>
+<span id="cb2-3"><a href></a>app <span class="ot">&lt;-</span> Ambiorix<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb2-4"><a href></a></span>
+<span id="cb2-5"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb2-6"><a href></a>  res<span class="sc">$</span><span class="fu">send</span>(<span class="st">&quot;Hello from Ambiorix!&quot;</span>)</span>
+<span id="cb2-7"><a href></a>})</span>
+<span id="cb2-8"><a href></a></span>
+<span id="cb2-9"><a href></a>app<span class="sc">$</span><span class="fu">start</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
 <li>That’s all you need</li>
 </ul>
 </section>
-<section id="build-apis-too" class="slide level2">
-<h2>Build APIs too</h2>
+<section id="request-object-structure" class="slide level2">
+<h2>Request Object Structure</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href></a><span class="co"># Route parameters: /users/:id</span></span>
+<span id="cb3-2"><a href></a>req<span class="sc">$</span>params<span class="sc">$</span>id</span>
+<span id="cb3-3"><a href></a></span>
+<span id="cb3-4"><a href></a><span class="co"># Query strings: /search?q=term&amp;limit=10</span></span>
+<span id="cb3-5"><a href></a>req<span class="sc">$</span>query<span class="sc">$</span>q</span>
+<span id="cb3-6"><a href></a>req<span class="sc">$</span>query<span class="sc">$</span>limit</span>
+<span id="cb3-7"><a href></a></span>
+<span id="cb3-8"><a href></a><span class="co"># Request body (JSON)</span></span>
+<span id="cb3-9"><a href></a>req<span class="sc">$</span><span class="fu">parse_json</span>()</span>
+<span id="cb3-10"><a href></a></span>
+<span id="cb3-11"><a href></a><span class="co"># Request body (multipart)</span></span>
+<span id="cb3-12"><a href></a>req<span class="sc">$</span><span class="fu">parse_multipart</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="route-parameters" class="slide level2">
+<h2>Route Parameters</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href></a><span class="co"># Define dynamic routes</span></span>
+<span id="cb4-2"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/users/:id&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb4-3"><a href></a>  user_id <span class="ot">&lt;-</span> req<span class="sc">$</span>params<span class="sc">$</span>id</span>
+<span id="cb4-4"><a href></a></span>
+<span id="cb4-5"><a href></a>  user_data <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb4-6"><a href></a>    <span class="at">id =</span> user_id,</span>
+<span id="cb4-7"><a href></a>    <span class="at">name =</span> <span class="st">&quot;John Doe&quot;</span>,</span>
+<span id="cb4-8"><a href></a>    <span class="at">email =</span> <span class="fu">paste0</span>(<span class="st">&quot;user&quot;</span>, user_id, <span class="st">&quot;@example.com&quot;</span>)</span>
+<span id="cb4-9"><a href></a>  )</span>
+<span id="cb4-10"><a href></a></span>
+<span id="cb4-11"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(user_data)</span>
+<span id="cb4-12"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li>Route JSON responses</li>
-<li>Work with <code>req$body</code>, <code>req$query</code>, <code>req$params</code> etc</li>
-<li>Great for building backend APIs in R</li>
+<li><code>/users/123</code> → <code>req$params$id</code> = “123”</li>
+<li><code>/users/456</code> → <code>req$params$id</code> = “456”</li>
 </ul>
 </section>
-<section id="example-api-endpoint" class="slide level2">
-<h2>Example: API Endpoint</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href></a>app<span class="sc">$</span><span class="fu">post</span>(<span class="st">&quot;/add&quot;</span>, <span class="cf">function</span>(req, res) {</span>
-<span id="cb2-2"><a href></a>  req_data <span class="ot">&lt;-</span> req<span class="sc">$</span><span class="fu">parse_multipart</span>(req)</span>
-<span id="cb2-3"><a href></a>  x <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(req_data<span class="sc">$</span>x)</span>
-<span id="cb2-4"><a href></a>  y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(req_data<span class="sc">$</span>y)</span>
-<span id="cb2-5"><a href></a></span>
-<span id="cb2-6"><a href></a>  result <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb2-7"><a href></a>    <span class="at">sum =</span> x <span class="sc">+</span> y,</span>
-<span id="cb2-8"><a href></a>    <span class="at">message =</span> <span class="st">&quot;Success&quot;</span>,</span>
-<span id="cb2-9"><a href></a>    <span class="at">code =</span> <span class="dv">200</span>L</span>
-<span id="cb2-10"><a href></a>  )</span>
-<span id="cb2-11"><a href></a></span>
-<span id="cb2-12"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(result)</span>
-<span id="cb2-13"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="middleware" class="slide level2">
+<h2>Middleware</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href></a><span class="co"># Define middleware</span></span>
+<span id="cb5-2"><a href></a>log_requests <span class="ot">&lt;-</span> <span class="cf">function</span>(req, res) {</span>
+<span id="cb5-3"><a href></a>  <span class="fu">cat</span>(<span class="st">&quot;[LOG]&quot;</span>, req<span class="sc">$</span>REQUEST_METHOD, req<span class="sc">$</span>PATH_INFO, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb5-4"><a href></a>}</span>
+<span id="cb5-5"><a href></a></span>
+<span id="cb5-6"><a href></a><span class="co"># Use middleware</span></span>
+<span id="cb5-7"><a href></a>app<span class="sc">$</span><span class="fu">use</span>(log_requests)</span>
+<span id="cb5-8"><a href></a></span>
+<span id="cb5-9"><a href></a><span class="co"># Middleware with parameters</span></span>
+<span id="cb5-10"><a href></a>app<span class="sc">$</span><span class="fu">use</span>(<span class="cf">function</span>(req, res) {</span>
+<span id="cb5-11"><a href></a>  req<span class="sc">$</span>timestamp <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb5-12"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li>All R</li>
-<li>You write the logic</li>
-</ul>
-</section>
-<section id="examples" class="slide level2">
-<h2>Examples</h2>
-<p>Live apps:</p>
-<ul>
-<li><a href="https://rrr.is/">rrr.is</a>: URL shortener</li>
-<li><a href="https://mwavu.com/">mwavu.com</a>: Personal Website</li>
-</ul>
-<p>Talk of eating your own dog food :)</p>
-<p>More examples in the docs:</p>
-<ul>
-<li><a href="https://ambiorix.dev/docs/examples/">ambiorix.dev/docs/examples</a></li>
+<li>Runs <strong>before</strong> route handlers</li>
+<li>Modify request object</li>
+<li>Add authentication, logging, etc.</li>
 </ul>
 </section>
 <section id="try-it-out" class="slide level2">
