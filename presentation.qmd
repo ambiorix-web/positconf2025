@@ -21,7 +21,15 @@ format:
 
 - Build web applications & APIs
 
-- Heavily inspired by [Express JS](https://expressjs.com/)
+- Inspired by [Express JS](https://expressjs.com/)
+
+---
+
+## Is it?
+
+![](./is-this-shiny-2.0.jpg)
+
+**NO.**
 
 ---
 
@@ -31,14 +39,6 @@ format:
 - Routing
   - Multipages out of the box :)
 - Middleware support
-
----
-
-## Is it?
-
-![](./is-this-shiny-2.0.jpg)
-
-NO.
 
 ---
 
