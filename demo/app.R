@@ -43,7 +43,7 @@ app$get("/api/datasets", function(req, res) {
   ))
 })
 
-app$get("/api/datasets/:name", function(req, res) {
+app$get("/api/datasets/:name/summary", function(req, res) {
   dataset_name <- req$params$name
   summary_data <- get_dataset_summary(dataset_name)
 
@@ -107,7 +107,7 @@ app$not_found <- function(req, res) {
       message = sprintf("API endpoint '%s' not found", req$PATH_INFO),
       available_endpoints = list(
         "/api/datasets",
-        "/api/datasets/{name}",
+        "/api/datasets/{name}/summary",
         "/api/datasets/{name}/data"
       )
     )

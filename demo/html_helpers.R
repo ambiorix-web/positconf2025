@@ -128,7 +128,7 @@ create_homepage <- function() {
               " - List all datasets"
             ),
             tags$li(
-              tags$code("/api/datasets/{name}"),
+              tags$code("/api/datasets/{name}/summary"),
               " - Get dataset summary"
             ),
             tags$li(
@@ -201,7 +201,7 @@ create_dataset_page <- function(dataset_name) {
         tags$div(
           class = "btn-group",
           tags$a(
-            href = sprintf("/api/datasets/%s", dataset_name),
+            href = sprintf("/api/datasets/%s/summary", dataset_name),
             class = "btn btn-outline-primary btn-sm",
             "📄 JSON Summary"
           ),
@@ -400,7 +400,7 @@ create_api_page <- function() {
             class = "badge bg-light text-primary me-2",
             "GET"
           ),
-          "/api/datasets/{name}"
+          "/api/datasets/{name}/summary"
         )
       ),
       tags$div(
@@ -411,17 +411,17 @@ create_api_page <- function() {
         tags$div(
           class = "btn-group",
           tags$a(
-            href = "/api/datasets/mtcars",
+            href = "/api/datasets/mtcars/summary",
             class = "btn btn-primary btn-sm",
             "mtcars →"
           ),
           tags$a(
-            href = "/api/datasets/iris",
+            href = "/api/datasets/iris/summary",
             class = "btn btn-primary btn-sm",
             "iris →"
           ),
           tags$a(
-            href = "/api/datasets/airquality",
+            href = "/api/datasets/airquality/summary",
             class = "btn btn-primary btn-sm",
             "airquality →"
           )
