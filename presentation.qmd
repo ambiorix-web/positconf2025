@@ -84,94 +84,179 @@ This is the **core idea** of ambiorix.
 
 ---
 
-## Hello World
+## Let's Build Something Together
+
+**Demo: Interactive Data Dashboard**
+
+- Explore R datasets (`mtcars`, `iris`, `airquality`)
+- **HTML interface** for humans
+- **JSON API** for machines  
+- **Same functions, different formats**
+
+*[Live Demo Time!]*
+
+---
+
+## The Demo App
 
 ```r
 library(ambiorix)
-
 app <- Ambiorix$new()
 
-app$get("/", function(req, res) {
-  res$send("Hello from Ambiorix!")
+# HTML route
+app$get("/datasets/:name", function(req, res) {
+  data <- get_dataset_summary(req$params$name)
+  res$send(create_html_page(data)) # Returns HTML
 })
 
-app$start()
-```
-
-- That’s all you need
-
----
-
-## Request Object Structure
-
-```r
-# Route parameters: /users/:id
-req$params$id
-
-# Query strings: /search?q=term&limit=10
-req$query$q
-req$query$limit
-
-# Request body (JSON)
-req$parse_json()
-
-# Request body (multipart)
-req$parse_multipart()
-```
-
----
-
-## Route Parameters
-
-```r
-# Define dynamic routes
-app$get("/users/:id", function(req, res) {
-  user_id <- req$params$id
-
-  user_data <- list(
-    id = user_id,
-    name = "John Doe",
-    email = paste0("user", user_id, "@example.com")
-  )
-
-  res$json(user_data)
+# JSON route
+app$get("/api/datasets/:name/summary", function(req, res) {
+  data <- get_dataset_summary(req$params$name) # Same function!
+  res$json(data) # Returns JSON
 })
-```
 
-- `/users/123` → `req$params$id` = "123"
-- `/users/456` → `req$params$id` = "456"
+app$start(port = 3000)
+```
 
 ---
 
-## Middleware
+## Same Data, Different Formats
+
+**One R function:**
+```r
+get_dataset_summary("mtcars")
+# Returns: list with statistics, sample data, etc.
+```
+
+**Two interfaces:**
+
+- **Browser**: Beautiful HTML tables and charts
+- **API**: Raw JSON for programmatic access
+
+**Key insight**: Write R logic once, serve it multiple ways!
+
+---
+
+## Route Parameters in Action
 
 ```r
-# Define middleware
-log_requests <- function(req, res) {
-  cat("[LOG]", req$REQUEST_METHOD, req$PATH_INFO, "\n")
-}
+app$get("/datasets/:name", function(req, res) {
+  dataset_name <- req$params$name
+  # dataset_name = "mtcars", "iris", "airquality"
 
-# Use middleware
-app$use(log_requests)
-
-# Middleware with parameters
-app$use(function(req, res) {
-  req$timestamp <- Sys.time()
+  summary <- get_dataset_summary(dataset_name)
+  res$send(create_dataset_page(summary))
 })
 ```
 
-- Runs **before** route handlers
-- Modify request object
-- Add authentication, logging, etc.
+- `/datasets/mtcars` → Motor Trend Car Road Tests
+- `/datasets/iris` → Edgar Anderson's Iris Data  
+- `/datasets/airquality` → New York Air Quality
+
+**URLs are meaningful and shareable!**
 
 ---
 
-## Try it out
+## Query Parameters for Flexibility
 
-- GitHub: [ambiorix-web/ambiorix](https://github.com/ambiorix-web/ambiorix)
-- Website: [ambiorix.dev](https://ambiorix.dev)
-- Easy to get started
-- Tutorials and examples included
+```r
+app$get("/api/datasets/:name/data", function(req, res) {
+  dataset_name <- req$params$name
+  limit <- req$query$limit # ?limit=10
+
+  data <- get_dataset_data(dataset_name, limit)
+  res$json(data)
+})
+```
+
+- `/api/datasets/mtcars/data` → All rows
+- `/api/datasets/mtcars/data?limit=5` → First 5 rows
+- `/api/datasets/iris/data?limit=10` → First 10 rows
+
+**Standard web patterns**
+
+---
+
+## Error Handling
+
+```r
+app$get("/api/datasets/:name/summary", function(req, res) {
+  summary <- get_dataset_summary(req$params$name)
+
+  if (is.null(summary)) {
+    response <- list(
+      error = "Dataset not found",
+      message = "Available: mtcars, iris, airquality"
+    )
+    res$status <- 404L
+    return(
+      res$json(response)
+    )
+  }
+
+  res$json(summary)
+})
+```
+
+**Proper HTTP status codes & helpful error messages**
+
+---
+
+## Multi-Page Applications
+
+**Unlike Shiny's single-page approach:**
+
+- `/` → Homepage with dataset cards
+- `/datasets/mtcars` → mtcars analysis page  
+- `/datasets/iris` → iris analysis page
+- `/api` → API documentation page
+
+**Web-native navigation:**
+
+- Browser back/forward buttons work
+- Each page has a unique, shareable URL
+- No JavaScript required for basic navigation
+
+---
+
+## Live Demo: The Full Experience
+
+**Let's explore our app together:**
+
+1. **Homepage** (`localhost:3000`) - Dataset gallery
+2. **Dataset detail** (`/datasets/mtcars`) - Rich HTML interface
+3. **JSON API** (`/api/datasets/mtcars/summary`) - Same data, raw format
+4. **Error handling** (`/datasets/nonexistent`) - Graceful 404s
+
+**One Ambiorix app = Multiple experiences!**
+
+---
+
+## What We Built
+
+✅ **Route parameters** (`/datasets/:name`)  
+✅ **Query parameters** (`?limit=10`)  
+✅ **JSON APIs** (`res$json()`)  
+✅ **HTML interfaces** (`res$send()`)  
+✅ **Error handling** (`404` responses)  
+✅ **Multi-page apps** (shareable URLs)  
+✅ **Familiar R workflow** (datasets, statistics)
+
+**~200 lines of R code = Full-featured web app!**
+
+---
+
+## Try Ambiorix
+
+- **GitHub**: [ambiorix-web/ambiorix](https://github.com/ambiorix-web/ambiorix)
+- **Website**: [ambiorix.dev](https://ambiorix.dev)  
+- **Demo code**: [ambiorix-web/positconf2025](https://github.com/ambiorix-web/positconf2025)
+
+**Get started:**
+```r
+install.packages("ambiorix")
+# Run the demo from /demo folder
+```
 
 ---
 

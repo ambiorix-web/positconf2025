@@ -1319,83 +1319,152 @@ margin-right: 0; }
   └──────── HTTP Cycle ──────────────────┘</code></pre></li>
 </ul>
 </section>
-<section id="hello-world" class="slide level2">
-<h2>Hello World</h2>
+<section id="lets-build-something-together" class="slide level2">
+<h2>Let’s Build Something Together</h2>
+<p><strong>Demo: Interactive Data Dashboard</strong></p>
+<ul>
+<li>Explore R datasets (<code>mtcars</code>, <code>iris</code>, <code>airquality</code>)</li>
+<li><strong>HTML interface</strong> for humans</li>
+<li><strong>JSON API</strong> for machines<br>
+</li>
+<li><strong>Same functions, different formats</strong></li>
+</ul>
+<p><em>[Live Demo Time!]</em></p>
+</section>
+<section id="the-demo-app" class="slide level2">
+<h2>The Demo App</h2>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href></a><span class="fu">library</span>(ambiorix)</span>
-<span id="cb2-2"><a href></a></span>
-<span id="cb2-3"><a href></a>app <span class="ot">&lt;-</span> Ambiorix<span class="sc">$</span><span class="fu">new</span>()</span>
-<span id="cb2-4"><a href></a></span>
-<span id="cb2-5"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/&quot;</span>, <span class="cf">function</span>(req, res) {</span>
-<span id="cb2-6"><a href></a>  res<span class="sc">$</span><span class="fu">send</span>(<span class="st">&quot;Hello from Ambiorix!&quot;</span>)</span>
-<span id="cb2-7"><a href></a>})</span>
-<span id="cb2-8"><a href></a></span>
-<span id="cb2-9"><a href></a>app<span class="sc">$</span><span class="fu">start</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href></a>app <span class="ot">&lt;-</span> Ambiorix<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb2-3"><a href></a></span>
+<span id="cb2-4"><a href></a><span class="co"># HTML route</span></span>
+<span id="cb2-5"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/datasets/:name&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb2-6"><a href></a>  data <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(req<span class="sc">$</span>params<span class="sc">$</span>name)</span>
+<span id="cb2-7"><a href></a>  res<span class="sc">$</span><span class="fu">send</span>(<span class="fu">create_html_page</span>(data)) <span class="co"># Returns HTML</span></span>
+<span id="cb2-8"><a href></a>})</span>
+<span id="cb2-9"><a href></a></span>
+<span id="cb2-10"><a href></a><span class="co"># JSON route</span></span>
+<span id="cb2-11"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/api/datasets/:name/summary&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb2-12"><a href></a>  data <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(req<span class="sc">$</span>params<span class="sc">$</span>name) <span class="co"># Same function!</span></span>
+<span id="cb2-13"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(data) <span class="co"># Returns JSON</span></span>
+<span id="cb2-14"><a href></a>})</span>
+<span id="cb2-15"><a href></a></span>
+<span id="cb2-16"><a href></a>app<span class="sc">$</span><span class="fu">start</span>(<span class="at">port =</span> <span class="dv">3000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="same-data-different-formats" class="slide level2">
+<h2>Same Data, Different Formats</h2>
+<p><strong>One R function:</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href></a><span class="fu">get_dataset_summary</span>(<span class="st">&quot;mtcars&quot;</span>)</span>
+<span id="cb3-2"><a href></a><span class="co"># Returns: list with statistics, sample data, etc.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Two interfaces:</strong></p>
 <ul>
-<li>That’s all you need</li>
+<li><strong>Browser</strong>: Beautiful HTML tables and charts</li>
+<li><strong>API</strong>: Raw JSON for programmatic access</li>
 </ul>
+<p><strong>Key insight</strong>: Write R logic once, serve it multiple ways!</p>
 </section>
-<section id="request-object-structure" class="slide level2">
-<h2>Request Object Structure</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href></a><span class="co"># Route parameters: /users/:id</span></span>
-<span id="cb3-2"><a href></a>req<span class="sc">$</span>params<span class="sc">$</span>id</span>
-<span id="cb3-3"><a href></a></span>
-<span id="cb3-4"><a href></a><span class="co"># Query strings: /search?q=term&amp;limit=10</span></span>
-<span id="cb3-5"><a href></a>req<span class="sc">$</span>query<span class="sc">$</span>q</span>
-<span id="cb3-6"><a href></a>req<span class="sc">$</span>query<span class="sc">$</span>limit</span>
-<span id="cb3-7"><a href></a></span>
-<span id="cb3-8"><a href></a><span class="co"># Request body (JSON)</span></span>
-<span id="cb3-9"><a href></a>req<span class="sc">$</span><span class="fu">parse_json</span>()</span>
-<span id="cb3-10"><a href></a></span>
-<span id="cb3-11"><a href></a><span class="co"># Request body (multipart)</span></span>
-<span id="cb3-12"><a href></a>req<span class="sc">$</span><span class="fu">parse_multipart</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="route-parameters" class="slide level2">
-<h2>Route Parameters</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href></a><span class="co"># Define dynamic routes</span></span>
-<span id="cb4-2"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/users/:id&quot;</span>, <span class="cf">function</span>(req, res) {</span>
-<span id="cb4-3"><a href></a>  user_id <span class="ot">&lt;-</span> req<span class="sc">$</span>params<span class="sc">$</span>id</span>
+<section id="route-parameters-in-action" class="slide level2">
+<h2>Route Parameters in Action</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/datasets/:name&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb4-2"><a href></a>  dataset_name <span class="ot">&lt;-</span> req<span class="sc">$</span>params<span class="sc">$</span>name</span>
+<span id="cb4-3"><a href></a>  <span class="co"># dataset_name = &quot;mtcars&quot;, &quot;iris&quot;, &quot;airquality&quot;</span></span>
 <span id="cb4-4"><a href></a></span>
-<span id="cb4-5"><a href></a>  user_data <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb4-6"><a href></a>    <span class="at">id =</span> user_id,</span>
-<span id="cb4-7"><a href></a>    <span class="at">name =</span> <span class="st">&quot;John Doe&quot;</span>,</span>
-<span id="cb4-8"><a href></a>    <span class="at">email =</span> <span class="fu">paste0</span>(<span class="st">&quot;user&quot;</span>, user_id, <span class="st">&quot;@example.com&quot;</span>)</span>
-<span id="cb4-9"><a href></a>  )</span>
-<span id="cb4-10"><a href></a></span>
-<span id="cb4-11"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(user_data)</span>
-<span id="cb4-12"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-5"><a href></a>  summary <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(dataset_name)</span>
+<span id="cb4-6"><a href></a>  res<span class="sc">$</span><span class="fu">send</span>(<span class="fu">create_dataset_page</span>(summary))</span>
+<span id="cb4-7"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li><code>/users/123</code> → <code>req$params$id</code> = “123”</li>
-<li><code>/users/456</code> → <code>req$params$id</code> = “456”</li>
+<li><code>/datasets/mtcars</code> → Motor Trend Car Road Tests</li>
+<li><code>/datasets/iris</code> → Edgar Anderson’s Iris Data<br>
+</li>
+<li><code>/datasets/airquality</code> → New York Air Quality</li>
+</ul>
+<p><strong>URLs are meaningful and shareable!</strong></p>
+</section>
+<section id="query-parameters-for-flexibility" class="slide level2">
+<h2>Query Parameters for Flexibility</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/api/datasets/:name/data&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb5-2"><a href></a>  dataset_name <span class="ot">&lt;-</span> req<span class="sc">$</span>params<span class="sc">$</span>name</span>
+<span id="cb5-3"><a href></a>  limit <span class="ot">&lt;-</span> req<span class="sc">$</span>query<span class="sc">$</span>limit <span class="co"># ?limit=10</span></span>
+<span id="cb5-4"><a href></a></span>
+<span id="cb5-5"><a href></a>  data <span class="ot">&lt;-</span> <span class="fu">get_dataset_data</span>(dataset_name, limit)</span>
+<span id="cb5-6"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(data)</span>
+<span id="cb5-7"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>/api/datasets/mtcars/data</code> → All rows</li>
+<li><code>/api/datasets/mtcars/data?limit=5</code> → First 5 rows</li>
+<li><code>/api/datasets/iris/data?limit=10</code> → First 10 rows</li>
+</ul>
+<p><strong>Standard web patterns</strong></p>
+</section>
+<section id="error-handling" class="slide level2">
+<h2>Error Handling</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/api/datasets/:name/summary&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb6-2"><a href></a>  summary <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(req<span class="sc">$</span>params<span class="sc">$</span>name)</span>
+<span id="cb6-3"><a href></a></span>
+<span id="cb6-4"><a href></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(summary)) {</span>
+<span id="cb6-5"><a href></a>    response <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb6-6"><a href></a>      <span class="at">error =</span> <span class="st">&quot;Dataset not found&quot;</span>,</span>
+<span id="cb6-7"><a href></a>      <span class="at">message =</span> <span class="st">&quot;Available: mtcars, iris, airquality&quot;</span></span>
+<span id="cb6-8"><a href></a>    )</span>
+<span id="cb6-9"><a href></a>    res<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="dv">404</span>L</span>
+<span id="cb6-10"><a href></a>    <span class="fu">return</span>(</span>
+<span id="cb6-11"><a href></a>      res<span class="sc">$</span><span class="fu">json</span>(response)</span>
+<span id="cb6-12"><a href></a>    )</span>
+<span id="cb6-13"><a href></a>  }</span>
+<span id="cb6-14"><a href></a></span>
+<span id="cb6-15"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(summary)</span>
+<span id="cb6-16"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Proper HTTP status codes &amp; helpful error messages</strong></p>
+</section>
+<section id="multi-page-applications" class="slide level2">
+<h2>Multi-Page Applications</h2>
+<p><strong>Unlike Shiny’s single-page approach:</strong></p>
+<ul>
+<li><code>/</code> → Homepage with dataset cards</li>
+<li><code>/datasets/mtcars</code> → mtcars analysis page<br>
+</li>
+<li><code>/datasets/iris</code> → iris analysis page</li>
+<li><code>/api</code> → API documentation page</li>
+</ul>
+<p><strong>Web-native navigation:</strong></p>
+<ul>
+<li>Browser back/forward buttons work</li>
+<li>Each page has a unique, shareable URL</li>
+<li>No JavaScript required for basic navigation</li>
 </ul>
 </section>
-<section id="middleware" class="slide level2">
-<h2>Middleware</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href></a><span class="co"># Define middleware</span></span>
-<span id="cb5-2"><a href></a>log_requests <span class="ot">&lt;-</span> <span class="cf">function</span>(req, res) {</span>
-<span id="cb5-3"><a href></a>  <span class="fu">cat</span>(<span class="st">&quot;[LOG]&quot;</span>, req<span class="sc">$</span>REQUEST_METHOD, req<span class="sc">$</span>PATH_INFO, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
-<span id="cb5-4"><a href></a>}</span>
-<span id="cb5-5"><a href></a></span>
-<span id="cb5-6"><a href></a><span class="co"># Use middleware</span></span>
-<span id="cb5-7"><a href></a>app<span class="sc">$</span><span class="fu">use</span>(log_requests)</span>
-<span id="cb5-8"><a href></a></span>
-<span id="cb5-9"><a href></a><span class="co"># Middleware with parameters</span></span>
-<span id="cb5-10"><a href></a>app<span class="sc">$</span><span class="fu">use</span>(<span class="cf">function</span>(req, res) {</span>
-<span id="cb5-11"><a href></a>  req<span class="sc">$</span>timestamp <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb5-12"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ul>
-<li>Runs <strong>before</strong> route handlers</li>
-<li>Modify request object</li>
-<li>Add authentication, logging, etc.</li>
-</ul>
+<section id="live-demo-the-full-experience" class="slide level2">
+<h2>Live Demo: The Full Experience</h2>
+<p><strong>Let’s explore our app together:</strong></p>
+<ol type="1">
+<li><strong>Homepage</strong> (<code>localhost:3000</code>) - Dataset gallery</li>
+<li><strong>Dataset detail</strong> (<code>/datasets/mtcars</code>) - Rich HTML interface</li>
+<li><strong>JSON API</strong> (<code>/api/datasets/mtcars/summary</code>) - Same data, raw format</li>
+<li><strong>Error handling</strong> (<code>/datasets/nonexistent</code>) - Graceful 404s</li>
+</ol>
+<p><strong>One Ambiorix app = Multiple experiences!</strong></p>
 </section>
-<section id="try-it-out" class="slide level2">
-<h2>Try it out</h2>
+<section id="what-we-built" class="slide level2">
+<h2>What We Built</h2>
+<p>✅ <strong>Route parameters</strong> (<code>/datasets/:name</code>)<br>
+✅ <strong>Query parameters</strong> (<code>?limit=10</code>)<br>
+✅ <strong>JSON APIs</strong> (<code>res$json()</code>)<br>
+✅ <strong>HTML interfaces</strong> (<code>res$send()</code>)<br>
+✅ <strong>Error handling</strong> (<code>404</code> responses)<br>
+✅ <strong>Multi-page apps</strong> (shareable URLs)<br>
+✅ <strong>Familiar R workflow</strong> (datasets, statistics)</p>
+<p><strong>~200 lines of R code = Full-featured web app!</strong></p>
+</section>
+<section id="try-ambiorix" class="slide level2">
+<h2>Try Ambiorix</h2>
 <ul>
-<li>GitHub: <a href="https://github.com/ambiorix-web/ambiorix">ambiorix-web/ambiorix</a></li>
-<li>Website: <a href="https://ambiorix.dev">ambiorix.dev</a></li>
-<li>Easy to get started</li>
-<li>Tutorials and examples included</li>
+<li><strong>GitHub</strong>: <a href="https://github.com/ambiorix-web/ambiorix">ambiorix-web/ambiorix</a></li>
+<li><strong>Website</strong>: <a href="https://ambiorix.dev">ambiorix.dev</a><br>
+</li>
+<li><strong>Demo code</strong>: <a href="https://github.com/ambiorix-web/positconf2025">ambiorix-web/positconf2025</a></li>
 </ul>
+<p><strong>Get started:</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href></a><span class="fu">install.packages</span>(<span class="st">&quot;ambiorix&quot;</span>)</span>
+<span id="cb7-2"><a href></a><span class="co"># Run the demo from /demo folder</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="thanks" class="slide level2">
 <h2>Thanks!</h2>
