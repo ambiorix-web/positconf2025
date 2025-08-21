@@ -3,11 +3,10 @@
 library(ambiorix)
 library(htmltools)
 
-# Source helper files
+# helper files
 source("data_analysis.R")
 source("html_helpers.R")
 
-# Initialize Ambiorix app
 app <- Ambiorix$new()
 
 # ========================================
@@ -48,15 +47,15 @@ app$get("/api/datasets/:name/summary", function(req, res) {
   summary_data <- get_dataset_summary(dataset_name)
 
   if (is.null(summary_data)) {
-    res$status(404L)
-    res$json(list(
+    response <- list(
       error = "Dataset not found",
       message = sprintf(
         "Dataset '%s' not found. Available datasets: mtcars, iris, airquality",
         dataset_name
       )
-    ))
-    return()
+    )
+    res$status <- 404L
+    return(res$json(response))
   }
 
   res$json(summary_data)
@@ -69,27 +68,27 @@ app$get("/api/datasets/:name/data", function(req, res) {
   if (!is.null(limit)) {
     limit <- as.numeric(limit)
     if (is.na(limit) || limit <= 0) {
-      res$status(400L)
-      res$json(list(
+      response <- list(
         error = "Invalid limit parameter",
         message = "Limit must be a positive number"
-      ))
-      return()
+      )
+      res$status <- 404L
+      return(res$json(response))
     }
   }
 
   data <- get_dataset_data(dataset_name, limit)
 
   if (is.null(data)) {
-    res$status(404L)
-    res$json(list(
+    response <- list(
       error = "Dataset not found",
       message = sprintf(
         "Dataset '%s' not found. Available datasets: mtcars, iris, airquality",
         dataset_name
       )
-    ))
-    return()
+    )
+    res$status <- 404L
+    return(res$json(response))
   }
 
   res$json(list(
