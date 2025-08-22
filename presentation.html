@@ -1259,7 +1259,16 @@ margin-right: 0; }
 <ul>
 <li>Multipages out of the box :)</li>
 </ul></li>
-<li>Middleware support</li>
+<li>APIs
+<ul>
+<li>JSON endpoints alongside HTML pages</li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>multiple steps -&gt; shrink into 1</li>
 </ul>
 </section>
 <section id="a-moment-for-shiny" class="slide level2">
@@ -1273,6 +1282,17 @@ margin-right: 0; }
 </ul></li>
 <li>Both are based on the same underlying package: <a href="https://github.com/rstudio/httpuv">{httpuv}</a>, but follow different principles on how to develop applications.</li>
 </ul>
+</section>
+<section id="my-journey-to-ambiorix" class="slide level2">
+<h2>My Journey to Ambiorix</h2>
+<p><strong>The Problem:</strong> Built huge Shiny applications, then realized I needed:</p>
+<ol type="1">
+<li><strong>Multi-pages</strong> - Routing. Share links to a specific page.</li>
+<li><strong>APIs for clients</strong> - They wanted to build their own frontends</li>
+</ol>
+<p><strong>The Dilemma:</strong> Didn’t want to leave R ecosystem</p>
+<p><strong>The Solution:</strong> Found Ambiorix - R web framework that handles both!</p>
+<p><em>“And he lived happily ever after”</em></p>
 </section>
 <section id="comparison" class="slide level2">
 <h2>Comparison</h2>
@@ -1331,30 +1351,48 @@ margin-right: 0; }
 </ul>
 <p><em>[Live Demo Time!]</em></p>
 </section>
+<section id="hello-world-request-response" class="slide level2">
+<h2>Hello World: Request → Response</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href></a><span class="fu">library</span>(ambiorix)</span>
+<span id="cb2-2"><a href></a></span>
+<span id="cb2-3"><a href></a>app <span class="ot">&lt;-</span> Ambiorix<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb2-4"><a href></a></span>
+<span id="cb2-5"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb2-6"><a href></a>  res<span class="sc">$</span><span class="fu">send</span>(<span class="st">&quot;Hello from Ambiorix!&quot;</span>)</span>
+<span id="cb2-7"><a href></a>})</span>
+<span id="cb2-8"><a href></a></span>
+<span id="cb2-9"><a href></a>app<span class="sc">$</span><span class="fu">start</span>(<span class="at">port =</span> <span class="dv">3000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>The cycle in action:</strong></p>
+<ul>
+<li>Browser requests <code>GET /</code></li>
+<li>Handler function receives <code>req</code>, <code>res</code></li>
+<li>We send response with <code>res$send()</code></li>
+</ul>
+</section>
 <section id="the-demo-app" class="slide level2">
 <h2>The Demo App</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href></a><span class="fu">library</span>(ambiorix)</span>
-<span id="cb2-2"><a href></a>app <span class="ot">&lt;-</span> Ambiorix<span class="sc">$</span><span class="fu">new</span>()</span>
-<span id="cb2-3"><a href></a></span>
-<span id="cb2-4"><a href></a><span class="co"># HTML route</span></span>
-<span id="cb2-5"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/datasets/:name&quot;</span>, <span class="cf">function</span>(req, res) {</span>
-<span id="cb2-6"><a href></a>  data <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(req<span class="sc">$</span>params<span class="sc">$</span>name)</span>
-<span id="cb2-7"><a href></a>  res<span class="sc">$</span><span class="fu">send</span>(<span class="fu">create_html_page</span>(data)) <span class="co"># Returns HTML</span></span>
-<span id="cb2-8"><a href></a>})</span>
-<span id="cb2-9"><a href></a></span>
-<span id="cb2-10"><a href></a><span class="co"># JSON route</span></span>
-<span id="cb2-11"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/api/datasets/:name/summary&quot;</span>, <span class="cf">function</span>(req, res) {</span>
-<span id="cb2-12"><a href></a>  data <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(req<span class="sc">$</span>params<span class="sc">$</span>name) <span class="co"># Same function!</span></span>
-<span id="cb2-13"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(data) <span class="co"># Returns JSON</span></span>
-<span id="cb2-14"><a href></a>})</span>
-<span id="cb2-15"><a href></a></span>
-<span id="cb2-16"><a href></a>app<span class="sc">$</span><span class="fu">start</span>(<span class="at">port =</span> <span class="dv">3000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href></a><span class="fu">library</span>(ambiorix)</span>
+<span id="cb3-2"><a href></a>app <span class="ot">&lt;-</span> Ambiorix<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb3-3"><a href></a></span>
+<span id="cb3-4"><a href></a><span class="co"># HTML route</span></span>
+<span id="cb3-5"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/datasets/:name&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb3-6"><a href></a>  data <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(req<span class="sc">$</span>params<span class="sc">$</span>name)</span>
+<span id="cb3-7"><a href></a>  res<span class="sc">$</span><span class="fu">send</span>(<span class="fu">create_html_page</span>(data)) <span class="co"># Returns HTML</span></span>
+<span id="cb3-8"><a href></a>})</span>
+<span id="cb3-9"><a href></a></span>
+<span id="cb3-10"><a href></a><span class="co"># JSON route</span></span>
+<span id="cb3-11"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/api/datasets/:name/summary&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb3-12"><a href></a>  data <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(req<span class="sc">$</span>params<span class="sc">$</span>name) <span class="co"># Same function!</span></span>
+<span id="cb3-13"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(data) <span class="co"># Returns JSON</span></span>
+<span id="cb3-14"><a href></a>})</span>
+<span id="cb3-15"><a href></a></span>
+<span id="cb3-16"><a href></a>app<span class="sc">$</span><span class="fu">start</span>(<span class="at">port =</span> <span class="dv">3000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="same-data-different-formats" class="slide level2">
 <h2>Same Data, Different Formats</h2>
 <p><strong>One R function:</strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href></a><span class="fu">get_dataset_summary</span>(<span class="st">&quot;mtcars&quot;</span>)</span>
-<span id="cb3-2"><a href></a><span class="co"># Returns: list with statistics, sample data, etc.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href></a><span class="fu">get_dataset_summary</span>(<span class="st">&quot;mtcars&quot;</span>)</span>
+<span id="cb4-2"><a href></a><span class="co"># Returns: list with statistics, sample data, etc.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Two interfaces:</strong></p>
 <ul>
 <li><strong>Browser</strong>: Beautiful HTML tables and charts</li>
@@ -1364,13 +1402,13 @@ margin-right: 0; }
 </section>
 <section id="route-parameters-in-action" class="slide level2">
 <h2>Route Parameters in Action</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/datasets/:name&quot;</span>, <span class="cf">function</span>(req, res) {</span>
-<span id="cb4-2"><a href></a>  dataset_name <span class="ot">&lt;-</span> req<span class="sc">$</span>params<span class="sc">$</span>name</span>
-<span id="cb4-3"><a href></a>  <span class="co"># dataset_name = &quot;mtcars&quot;, &quot;iris&quot;, &quot;airquality&quot;</span></span>
-<span id="cb4-4"><a href></a></span>
-<span id="cb4-5"><a href></a>  summary <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(dataset_name)</span>
-<span id="cb4-6"><a href></a>  res<span class="sc">$</span><span class="fu">send</span>(<span class="fu">create_dataset_page</span>(summary))</span>
-<span id="cb4-7"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/datasets/:name&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb5-2"><a href></a>  dataset_name <span class="ot">&lt;-</span> req<span class="sc">$</span>params<span class="sc">$</span>name</span>
+<span id="cb5-3"><a href></a>  <span class="co"># dataset_name = &quot;mtcars&quot;, &quot;iris&quot;, &quot;airquality&quot;</span></span>
+<span id="cb5-4"><a href></a></span>
+<span id="cb5-5"><a href></a>  summary <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(dataset_name)</span>
+<span id="cb5-6"><a href></a>  res<span class="sc">$</span><span class="fu">send</span>(<span class="fu">create_dataset_page</span>(summary))</span>
+<span id="cb5-7"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
 <li><code>/datasets/mtcars</code> → Motor Trend Car Road Tests</li>
 <li><code>/datasets/iris</code> → Edgar Anderson’s Iris Data<br>
@@ -1381,13 +1419,13 @@ margin-right: 0; }
 </section>
 <section id="query-parameters-for-flexibility" class="slide level2">
 <h2>Query Parameters for Flexibility</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/api/datasets/:name/data&quot;</span>, <span class="cf">function</span>(req, res) {</span>
-<span id="cb5-2"><a href></a>  dataset_name <span class="ot">&lt;-</span> req<span class="sc">$</span>params<span class="sc">$</span>name</span>
-<span id="cb5-3"><a href></a>  limit <span class="ot">&lt;-</span> req<span class="sc">$</span>query<span class="sc">$</span>limit <span class="co"># ?limit=10</span></span>
-<span id="cb5-4"><a href></a></span>
-<span id="cb5-5"><a href></a>  data <span class="ot">&lt;-</span> <span class="fu">get_dataset_data</span>(dataset_name, limit)</span>
-<span id="cb5-6"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(data)</span>
-<span id="cb5-7"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/api/datasets/:name/data&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb6-2"><a href></a>  dataset_name <span class="ot">&lt;-</span> req<span class="sc">$</span>params<span class="sc">$</span>name</span>
+<span id="cb6-3"><a href></a>  limit <span class="ot">&lt;-</span> req<span class="sc">$</span>query<span class="sc">$</span>limit <span class="co"># ?limit=10</span></span>
+<span id="cb6-4"><a href></a></span>
+<span id="cb6-5"><a href></a>  data <span class="ot">&lt;-</span> <span class="fu">get_dataset_data</span>(dataset_name, limit)</span>
+<span id="cb6-6"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(data)</span>
+<span id="cb6-7"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
 <li><code>/api/datasets/mtcars/data</code> → All rows</li>
 <li><code>/api/datasets/mtcars/data?limit=5</code> → First 5 rows</li>
@@ -1397,22 +1435,22 @@ margin-right: 0; }
 </section>
 <section id="error-handling" class="slide level2">
 <h2>Error Handling</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/api/datasets/:name/summary&quot;</span>, <span class="cf">function</span>(req, res) {</span>
-<span id="cb6-2"><a href></a>  summary <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(req<span class="sc">$</span>params<span class="sc">$</span>name)</span>
-<span id="cb6-3"><a href></a></span>
-<span id="cb6-4"><a href></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(summary)) {</span>
-<span id="cb6-5"><a href></a>    response <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb6-6"><a href></a>      <span class="at">error =</span> <span class="st">&quot;Dataset not found&quot;</span>,</span>
-<span id="cb6-7"><a href></a>      <span class="at">message =</span> <span class="st">&quot;Available: mtcars, iris, airquality&quot;</span></span>
-<span id="cb6-8"><a href></a>    )</span>
-<span id="cb6-9"><a href></a>    res<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="dv">404</span>L</span>
-<span id="cb6-10"><a href></a>    <span class="fu">return</span>(</span>
-<span id="cb6-11"><a href></a>      res<span class="sc">$</span><span class="fu">json</span>(response)</span>
-<span id="cb6-12"><a href></a>    )</span>
-<span id="cb6-13"><a href></a>  }</span>
-<span id="cb6-14"><a href></a></span>
-<span id="cb6-15"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(summary)</span>
-<span id="cb6-16"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href></a>app<span class="sc">$</span><span class="fu">get</span>(<span class="st">&quot;/api/datasets/:name/summary&quot;</span>, <span class="cf">function</span>(req, res) {</span>
+<span id="cb7-2"><a href></a>  summary <span class="ot">&lt;-</span> <span class="fu">get_dataset_summary</span>(req<span class="sc">$</span>params<span class="sc">$</span>name)</span>
+<span id="cb7-3"><a href></a></span>
+<span id="cb7-4"><a href></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(summary)) {</span>
+<span id="cb7-5"><a href></a>    response <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb7-6"><a href></a>      <span class="at">error =</span> <span class="st">&quot;Dataset not found&quot;</span>,</span>
+<span id="cb7-7"><a href></a>      <span class="at">message =</span> <span class="st">&quot;Available: mtcars, iris, airquality&quot;</span></span>
+<span id="cb7-8"><a href></a>    )</span>
+<span id="cb7-9"><a href></a>    res<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="dv">404</span>L</span>
+<span id="cb7-10"><a href></a>    <span class="fu">return</span>(</span>
+<span id="cb7-11"><a href></a>      res<span class="sc">$</span><span class="fu">json</span>(response)</span>
+<span id="cb7-12"><a href></a>    )</span>
+<span id="cb7-13"><a href></a>  }</span>
+<span id="cb7-14"><a href></a></span>
+<span id="cb7-15"><a href></a>  res<span class="sc">$</span><span class="fu">json</span>(summary)</span>
+<span id="cb7-16"><a href></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Proper HTTP status codes &amp; helpful error messages</strong></p>
 </section>
 <section id="multi-page-applications" class="slide level2">
@@ -1463,8 +1501,8 @@ margin-right: 0; }
 <li><strong>Demo code</strong>: <a href="https://github.com/ambiorix-web/positconf2025">ambiorix-web/positconf2025</a></li>
 </ul>
 <p><strong>Get started:</strong></p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href></a><span class="fu">install.packages</span>(<span class="st">&quot;ambiorix&quot;</span>)</span>
-<span id="cb7-2"><a href></a><span class="co"># Run the demo from /demo folder</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href></a><span class="fu">install.packages</span>(<span class="st">&quot;ambiorix&quot;</span>)</span>
+<span id="cb8-2"><a href></a><span class="co"># Run the demo from /demo folder</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="thanks" class="slide level2">
 <h2>Thanks!</h2>

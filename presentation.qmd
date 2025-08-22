@@ -38,9 +38,12 @@ format:
 - Fine-grained control over HTTP
 - Routing
   - Multipages out of the box :)
-- Middleware support
+- APIs
+  - JSON endpoints alongside HTML pages
 
 ---
+
+- multiple steps -> shrink into 1
 
 ## A moment for Shiny
 
@@ -51,6 +54,21 @@ format:
 
 - Both are based on the same underlying package: [{httpuv}](https://github.com/rstudio/httpuv),
 but follow different principles on how to develop applications.
+
+---
+
+## My Journey to Ambiorix
+
+**The Problem:** Built huge Shiny applications, then realized I needed:
+
+1. **Multi-pages** - Routing. Share links to a specific page. 
+2. **APIs for clients** - They wanted to build their own frontends
+
+**The Dilemma:** Didn't want to leave R ecosystem
+
+**The Solution:** Found Ambiorix - R web framework that handles both!
+
+*"And he lived happily ever after"*
 
 ---
 
@@ -94,6 +112,28 @@ This is the **core idea** of ambiorix.
 - **Same functions, different formats**
 
 *[Live Demo Time!]*
+
+---
+
+## Hello World: Request → Response
+
+```r
+library(ambiorix)
+
+app <- Ambiorix$new()
+
+app$get("/", function(req, res) {
+  res$send("Hello from Ambiorix!")
+})
+
+app$start(port = 3000)
+```
+
+**The cycle in action:**
+
+- Browser requests `GET /` 
+- Handler function receives `req`, `res`
+- We send response with `res$send()`
 
 ---
 
