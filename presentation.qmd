@@ -33,30 +33,6 @@ format:
 
 ---
 
-## Why should you care?
-
-- Fine-grained control over HTTP
-- Routing
-  - Multipages out of the box :)
-- APIs
-  - JSON endpoints alongside HTML pages
-
----
-
-- multiple steps -> shrink into 1
-
-## A moment for Shiny
-
-- Shiny is brilliant (Pun intended)
-- Ambiorix isn’t trying to replace Shiny
-  - Provides a different interface: **request → response**
-  - Appeal to a different set of useRs
-
-- Both are based on the same underlying package: [{httpuv}](https://github.com/rstudio/httpuv),
-but follow different principles on how to develop applications.
-
----
-
 ## My Journey to Ambiorix
 
 **The Problem:** Built huge Shiny applications, then realized I needed:
@@ -69,6 +45,16 @@ but follow different principles on how to develop applications.
 **The Solution:** Found Ambiorix - R web framework that handles both!
 
 *"And he lived happily ever after"*
+
+---
+
+## Why should you care?
+
+- Fine-grained control over HTTP
+- Routing
+  - Multipages out of the box :)
+- APIs
+  - JSON endpoints alongside HTML pages
 
 ---
 
