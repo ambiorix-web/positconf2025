@@ -27,7 +27,7 @@ format:
 
 ## Is it?
 
-![](./is-this-shiny-2.0.jpg)
+![](./is-this-shiny-2.0.jpg){alt="is this a pigeon meme"}
 
 **NO.**
 
@@ -120,6 +120,15 @@ app$start(port = 3000)
 - Browser requests `GET /` 
 - Handler function receives `req`, `res`
 - We send response with `res$send()`
+
+---
+
+## Brief Overvie of HTTP Methods
+
+- GET: retrieve resource from the server 
+- PUT: update a resource
+- POST: create a in the server
+- DELETE: removes a resource from server
 
 ---
 
