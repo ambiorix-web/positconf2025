@@ -30,7 +30,8 @@ get_available_datasets <- function() {
 
 #' Get dataset by name
 get_dataset <- function(dataset_name) {
-  switch(dataset_name,
+  switch(
+    dataset_name,
     "mtcars" = mtcars,
     "iris" = iris,
     "airquality" = airquality,
@@ -39,20 +40,31 @@ get_dataset <- function(dataset_name) {
 }
 
 #' Get dataset summary statistics
-get_dataset_summary <- function(dataset_name) {
+#'
+#' @param dataset_name String. The dataset name. Either
+#' 'mtcars' (default), 'iris', or 'airquality'.
+#' @return Named list with these items:
+#'         - dataset_info
+#'         - numeric_summary
+#'         - factor_summary
+#'         - sample_data
+#' @export
+get_dataset_summary <- function(
+  dataset_name = c("mtcars", "iris", "airquality")
+) {
+  dataset_name <- match.arg(arg = dataset_name)
   data <- get_dataset(dataset_name)
-  if (is.null(data)) {
-    return(NULL)
-  }
-  
+
   # Get basic info
   dataset_info <- get_available_datasets()
-  info <- dataset_info[[which(sapply(dataset_info, function(x) x$name == dataset_name))]]
-  
+  info <- dataset_info[[which(sapply(dataset_info, function(x) {
+    x$name == dataset_name
+  }))]]
+
   # Calculate summary statistics
   numeric_cols <- sapply(data, is.numeric)
   numeric_data <- data[, numeric_cols, drop = FALSE]
-  
+
   summary_stats <- list()
   if (ncol(numeric_data) > 0) {
     summary_stats <- lapply(names(numeric_data), function(col) {
@@ -69,11 +81,11 @@ get_dataset_summary <- function(dataset_name) {
     })
     names(summary_stats) <- names(numeric_data)
   }
-  
+
   # Factor columns
   factor_cols <- sapply(data, function(x) is.factor(x) || is.character(x))
   factor_data <- data[, factor_cols, drop = FALSE]
-  
+
   factor_stats <- list()
   if (ncol(factor_data) > 0) {
     factor_stats <- lapply(names(factor_data), function(col) {
@@ -89,7 +101,7 @@ get_dataset_summary <- function(dataset_name) {
     })
     names(factor_stats) <- names(factor_data)
   }
-  
+
   list(
     dataset_info = info,
     numeric_summary = summary_stats,
@@ -98,16 +110,28 @@ get_dataset_summary <- function(dataset_name) {
   )
 }
 
-#' Get raw dataset data with optional limit
-get_dataset_data <- function(dataset_name, limit = NULL) {
+#' Get raw dataset data
+#'
+#' @param dataset_name String. Dataset name.
+#' @param limit Integer. How many rows should be returned?
+#'        Defaults to an empty integer vector.
+#' @return data.frame
+#' @export
+get_dataset_data <- function(dataset_name, limit = integer()) {
   data <- get_dataset(dataset_name)
   if (is.null(data)) {
     return(NULL)
   }
-  
-  if (!is.null(limit) && is.numeric(limit) && limit > 0) {
-    data <- utils::head(data, limit)
+
+  limit_is_valid <- length(limit) &&
+    is.integer(limit) &&
+    limit > 0L &&
+    limit < nrow(data)
+
+  if (limit_is_valid) {
+    data <- data[seq_len(limit), ]
   }
-  
+
   data
 }
+

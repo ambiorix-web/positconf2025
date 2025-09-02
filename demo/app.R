@@ -7,46 +7,72 @@ library(htmltools)
 source("data_analysis.R")
 source("html_helpers.R")
 
+#' Check whether a dataset name is valid
+#'
+#' @param dataset_name String. The dataset name.
+#' @return Logical. `TRUE` if valid, `FALSE` otherwise.
+is_valid_dataset <- function(dataset_name) {
+  dataset_name %in% c("mtcars", "iris", "airquality")
+}
+
 app <- Ambiorix$new()
 
 # ========================================
 # HTML ROUTES (Browser Interface)
 # ========================================
 
-app$get("/", function(req, res) {
+home_get <- function(req, res) {
   html_content <- create_homepage()
   res$send(html_content)
-})
+}
 
-app$get("/datasets/:name", function(req, res) {
+app$get("/", home_get)
+
+dataset_html_get <- function(req, res) {
   dataset_name <- req$params$name
+
+  if (!is_valid_dataset(dataset_name)) {
+    html <- create_error_page(
+      "Dataset not found",
+      sprintf("Dataset '%s' not found.", dataset_name)
+    )
+
+    res$status <- 404L
+    return(res$send(html))
+  }
+
   html_content <- create_dataset_page(dataset_name)
   res$send(html_content)
-})
+}
 
-app$get("/api", function(req, res) {
+app$get("/datasets/:name", dataset_html_get)
+
+api_get <- function(req, res) {
   html_content <- create_api_page()
   res$send(html_content)
-})
+}
+
+app$get("/api", api_get)
 
 # ========================================
 # JSON API ROUTES
 # ========================================
 
-app$get("/api/datasets", function(req, res) {
+api_datasets_get <- function(req, res) {
   datasets <- get_available_datasets()
   res$json(list(
     message = "Available datasets",
     count = length(datasets),
     datasets = datasets
   ))
-})
+}
 
-app$get("/api/datasets/:name/summary", function(req, res) {
+app$get("/api/datasets", api_datasets_get)
+
+api_dataset_summary_get <- function(req, res) {
   dataset_name <- req$params$name
-  summary_data <- get_dataset_summary(dataset_name)
 
-  if (is.null(summary_data)) {
+  if (!is_valid_dataset(dataset_name)) {
     response <- list(
       error = "Dataset not found",
       message = sprintf(
@@ -54,14 +80,19 @@ app$get("/api/datasets/:name/summary", function(req, res) {
         dataset_name
       )
     )
+
     res$status <- 404L
     return(res$json(response))
   }
 
-  res$json(summary_data)
-})
+  summary_data <- get_dataset_summary(dataset_name)
 
-app$get("/api/datasets/:name/data", function(req, res) {
+  res$json(summary_data)
+}
+
+app$get("/api/datasets/:name/summary", api_dataset_summary_get)
+
+api_data_get <- function(req, res) {
   dataset_name <- req$params$name
 
   limit <- req$query$limit
@@ -97,7 +128,9 @@ app$get("/api/datasets/:name/data", function(req, res) {
     limit_applied = !is.null(limit),
     data = data
   ))
-})
+}
+
+app$get("/api/datasets/:name/data", api_data_get)
 
 app$not_found <- function(req, res) {
   if (startsWith(req$PATH_INFO, "/api/")) {

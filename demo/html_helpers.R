@@ -4,51 +4,48 @@ library(htmltools)
 
 #' Create a Bootstrap page layout
 create_bootstrap_page <- function(title, content, show_api_link = TRUE) {
-  tagList(
-    HTML("<!DOCTYPE html>"),
-    tags$html(
-      tags$head(
-        tags$meta(charset = "utf-8"),
-        tags$meta(
-          name = "viewport",
-          content = "width=device-width, initial-scale=1, shrink-to-fit=no"
-        ),
-        tags$title(title),
-        tags$link(
-          rel = "stylesheet",
-          href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        )
+  tags$html(
+    tags$head(
+      tags$meta(charset = "utf-8"),
+      tags$meta(
+        name = "viewport",
+        content = "width=device-width, initial-scale=1, shrink-to-fit=no"
       ),
-      tags$body(
-        tags$nav(
-          class = "navbar navbar-expand-lg navbar-dark bg-primary mb-4",
-          tags$div(
-            class = "container",
-            tags$a(
-              class = "navbar-brand",
-              href = "/",
-              "📊 Ambiorix Data Dashboard"
-            ),
-            if (show_api_link) {
-              tags$div(
-                class = "navbar-nav ms-auto",
-                tags$a(
-                  class = "nav-link",
-                  href = "/api",
-                  style = "color: #ffd700;",
-                  "🔗 Explore API"
-                )
-              )
-            }
-          )
-        ),
+      tags$title(title),
+      tags$link(
+        rel = "stylesheet",
+        href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      )
+    ),
+    tags$body(
+      tags$nav(
+        class = "navbar navbar-expand-lg navbar-dark bg-primary mb-4",
         tags$div(
           class = "container",
-          content
-        ),
-        tags$script(
-          src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+          tags$a(
+            class = "navbar-brand",
+            href = "/",
+            "📊 Ambiorix Data Dashboard"
+          ),
+          if (show_api_link) {
+            tags$div(
+              class = "navbar-nav ms-auto",
+              tags$a(
+                class = "nav-link",
+                href = "/api",
+                style = "color: #ffd700;",
+                "🔗 Explore API"
+              )
+            )
+          }
         )
+      ),
+      tags$div(
+        class = "container",
+        content
+      ),
+      tags$script(
+        src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
       )
     )
   )
@@ -74,7 +71,7 @@ create_homepage <- function() {
 
         tags$h2("Available Datasets"),
 
-        # Dataset cards
+        # ----dataset cards----
         tags$div(
           class = "row",
           lapply(datasets, function(dataset) {
@@ -114,7 +111,7 @@ create_homepage <- function() {
           })
         ),
 
-        # API Information
+        # ----API info----
         tags$div(
           class = "mt-5 p-4 bg-light rounded",
           tags$h3("API Endpoints"),
@@ -150,20 +147,16 @@ create_homepage <- function() {
 }
 
 #' Create dataset detail page
+#'
+#' @param dataset_name String. Dataset to build page for.
+#'        Either 'mtcars', 'iris', or 'airquality'
+#' @return [htmltools::tags]
 create_dataset_page <- function(dataset_name) {
   summary_data <- get_dataset_summary(dataset_name)
-
-  if (is.null(summary_data)) {
-    return(create_error_page(
-      "Dataset not found",
-      sprintf("Dataset '%s' not found.", dataset_name)
-    ))
-  }
 
   info <- summary_data$dataset_info
 
   content <- tagList(
-    # Breadcrumb
     tags$nav(
       "aria-label" = "breadcrumb",
       tags$ol(
@@ -180,7 +173,6 @@ create_dataset_page <- function(dataset_name) {
       )
     ),
 
-    # Dataset Header
     tags$div(
       class = "row mb-4",
       tags$div(
@@ -214,11 +206,9 @@ create_dataset_page <- function(dataset_name) {
       )
     ),
 
-    # Statistics
     tags$div(
       class = "row",
 
-      # Numeric columns
       if (length(summary_data$numeric_summary) > 0) {
         tags$div(
           class = "col-lg-8",
@@ -266,7 +256,6 @@ create_dataset_page <- function(dataset_name) {
         )
       },
 
-      # Factor/Character columns
       if (length(summary_data$factor_summary) > 0) {
         tags$div(
           class = "col-lg-4",
@@ -300,7 +289,6 @@ create_dataset_page <- function(dataset_name) {
       }
     ),
 
-    # Sample Data
     tags$div(
       class = "mt-4",
       tags$h3("👀 Sample Data (First 5 rows)"),
