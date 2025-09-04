@@ -15,6 +15,10 @@ create_bootstrap_page <- function(title, content, show_api_link = TRUE) {
       tags$link(
         rel = "stylesheet",
         href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      ),
+      tags$link(
+        rel = "stylesheet",
+        href = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
       )
     ),
     tags$body(
@@ -25,7 +29,10 @@ create_bootstrap_page <- function(title, content, show_api_link = TRUE) {
           tags$a(
             class = "navbar-brand",
             href = "/",
-            "📊 Ambiorix Data Dashboard"
+            tags$span(
+              tags$i(class = "bi bi-bar-chart"),
+              "Ambiorix Data Dashboard"
+            )
           ),
           if (show_api_link) {
             tags$div(
@@ -34,7 +41,10 @@ create_bootstrap_page <- function(title, content, show_api_link = TRUE) {
                 class = "nav-link",
                 href = "/api",
                 style = "color: #ffd700;",
-                "🔗 Explore API"
+                tags$span(
+                  tags$i(class = "bi bi-link-45deg"),
+                  "Explore API"
+                )
               )
             )
           }
@@ -62,7 +72,10 @@ create_homepage <- function() {
         class = "col-lg-8 mx-auto",
         tags$h1(
           class = "display-4 text-center mb-4",
-          "📊 Interactive Data Dashboard"
+          tags$span(
+            tags$i(class = "bi bi-bar-chart"),
+            "Interactive Data Dashboard"
+          )
         ),
         tags$p(
           class = "lead text-center mb-5",
@@ -195,12 +208,18 @@ create_dataset_page <- function(dataset_name) {
           tags$a(
             href = sprintf("/api/datasets/%s/summary", dataset_name),
             class = "btn btn-outline-primary btn-sm",
-            "📄 JSON Summary"
+            tags$span(
+              tags$i(class = "bi bi-file-earmark-text"),
+              "JSON Summary"
+            )
           ),
           tags$a(
             href = sprintf("/api/datasets/%s/data?limit=10", dataset_name),
             class = "btn btn-outline-success btn-sm",
-            "📊 Raw Data (JSON)"
+            tags$span(
+              tags$i(class = "bi bi-bar-chart"),
+              "Raw Data (JSON)"
+            )
           )
         )
       )
@@ -212,7 +231,10 @@ create_dataset_page <- function(dataset_name) {
       if (length(summary_data$numeric_summary) > 0) {
         tags$div(
           class = "col-lg-8",
-          tags$h3("📈 Numeric Columns"),
+          tags$h3(
+            tags$i(class = "bi bi-graph-up"),
+            "Numeric Columns"
+          ),
           tags$div(
             class = "table-responsive",
             tags$table(
@@ -259,7 +281,10 @@ create_dataset_page <- function(dataset_name) {
       if (length(summary_data$factor_summary) > 0) {
         tags$div(
           class = "col-lg-4",
-          tags$h3("🏷️ Categorical Columns"),
+          tags$h3(
+            tags$i(class = "bi bi-tags"),
+            "Categorical Columns"
+          ),
           lapply(summary_data$factor_summary, function(stat) {
             tags$div(
               class = "card mb-3",
@@ -291,7 +316,10 @@ create_dataset_page <- function(dataset_name) {
 
     tags$div(
       class = "mt-4",
-      tags$h3("👀 Sample Data (First 5 rows)"),
+      tags$h3(
+        tags$i(class = "bi bi-card-list"),
+        "Sample Data (First 5 rows)"
+      ),
       tags$div(
         class = "table-responsive",
         create_data_table(summary_data$sample_data)
@@ -342,7 +370,10 @@ create_data_table <- function(data) {
 #' Create API info page
 create_api_page <- function() {
   content <- tagList(
-    tags$h1("🔗 API Documentation"),
+    tags$h1(
+      tags$i(class = "bi bi-link-45deg"),
+      "API Documentation"
+    ),
     tags$p(
       class = "lead",
       "The same data available through the web interface is also accessible via JSON API."
@@ -455,7 +486,10 @@ create_api_page <- function() {
 
     tags$div(
       class = "mt-4 p-4 bg-light rounded",
-      tags$h4("💡 Note"),
+      tags$h4(
+        tags$i(class = "bi bi-lightbulb"),
+        "Note"
+      ),
       tags$p(
         "All API endpoints return JSON data. The browser will display raw JSON, ",
         "but you can use tools like ",
