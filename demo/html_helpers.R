@@ -71,14 +71,14 @@ create_homepage <- function() {
       tags$div(
         class = "col-lg-8 mx-auto",
         tags$h1(
-          class = "display-4 text-center mb-4",
+          class = "display-4 mb-4",
           tags$span(
             tags$i(class = "bi bi-bar-chart"),
             "Interactive Data Dashboard"
           )
         ),
         tags$p(
-          class = "lead text-center mb-5",
+          class = "lead mb-5",
           "Explore R datasets through both web interface and JSON API - all powered by Ambiorix!"
         ),
 
@@ -126,30 +126,36 @@ create_homepage <- function() {
 
         # ----API info----
         tags$div(
-          class = "mt-5 p-4 bg-light rounded",
-          tags$h3("API Endpoints"),
-          tags$p(
-            "This same data is also available via JSON API:"
-          ),
-          tags$ul(
-            class = "list-unstyled",
-            tags$li(
-              tags$code("/api/datasets"),
-              " - List all datasets"
+          class = "card my-5 bg-light",
+          tags$div(
+            class = "card-body",
+            tags$h3(
+              class = "card-title",
+              "API Endpoints"
             ),
-            tags$li(
-              tags$code("/api/datasets/{name}/summary"),
-              " - Get dataset summary"
+            tags$p(
+              "This same data is also available via JSON API:"
             ),
-            tags$li(
-              tags$code("/api/datasets/{name}/data?limit=10"),
-              " - Get raw data"
+            tags$ul(
+              class = "list-unstyled",
+              tags$li(
+                tags$code("/api/datasets"),
+                " - List all datasets"
+              ),
+              tags$li(
+                tags$code("/api/datasets/{name}/summary"),
+                " - Get dataset summary"
+              ),
+              tags$li(
+                tags$code("/api/datasets/{name}/data?limit=10"),
+                " - Get raw data"
+              )
+            ),
+            tags$a(
+              href = "/api/datasets",
+              class = "btn btn-outline-primary",
+              "Try the API"
             )
-          ),
-          tags$a(
-            href = "/api/datasets",
-            class = "btn btn-outline-primary",
-            "Try the API"
           )
         )
       )
@@ -395,11 +401,10 @@ create_api_page <- function() {
 
     tags$h2("Endpoints"),
 
-    # GET /api/datasets
     tags$div(
       class = "card mb-4",
       tags$div(
-        class = "card-header bg-success text-white",
+        class = "card-header bg-success bg-gradient text-white",
         tags$h5(
           class = "mb-0",
           tags$span(
@@ -416,8 +421,11 @@ create_api_page <- function() {
         ),
         tags$a(
           href = "/api/datasets",
-          class = "btn btn-success btn-sm",
-          "Try it →"
+          class = "btn btn-outline-dark btn-sm",
+          tags$span(
+            "Try it ",
+            tags$i(class = "bi bi-arrow-right")
+          )
         )
       )
     ),
@@ -426,11 +434,11 @@ create_api_page <- function() {
     tags$div(
       class = "card mb-4",
       tags$div(
-        class = "card-header bg-primary text-white",
+        class = "card-header bg-success bg-gradient text-white",
         tags$h5(
           class = "mb-0",
           tags$span(
-            class = "badge bg-light text-primary me-2",
+            class = "badge bg-light text-success me-2",
             "GET"
           ),
           "/api/datasets/{name}/summary"
@@ -445,18 +453,27 @@ create_api_page <- function() {
           class = "btn-group",
           tags$a(
             href = "/api/datasets/mtcars/summary",
-            class = "btn btn-primary btn-sm",
-            "mtcars →"
+            class = "btn btn-outline-dark btn-sm",
+            tags$span(
+              "mtcars ",
+              tags$i(class = "bi bi-arrow-right")
+            )
           ),
           tags$a(
             href = "/api/datasets/iris/summary",
-            class = "btn btn-primary btn-sm",
-            "iris →"
+            class = "btn btn-outline-dark btn-sm",
+            tags$span(
+              "iris ",
+              tags$i(class = "bi bi-arrow-right")
+            )
           ),
           tags$a(
             href = "/api/datasets/airquality/summary",
-            class = "btn btn-primary btn-sm",
-            "airquality →"
+            class = "btn btn-outline-dark btn-sm",
+            tags$span(
+              "airquality ",
+              tags$i(class = "bi bi-arrow-right")
+            )
           )
         )
       )
@@ -466,10 +483,13 @@ create_api_page <- function() {
     tags$div(
       class = "card mb-4",
       tags$div(
-        class = "card-header bg-info text-white",
+        class = "card-header bg-success bg-gradient text-white",
         tags$h5(
           class = "mb-0",
-          tags$span(class = "badge bg-light text-info me-2", "GET"),
+          tags$span(
+            class = "badge bg-light text-success me-2",
+            "GET"
+          ),
           "/api/datasets/{name}/data"
         )
       ),
@@ -486,21 +506,28 @@ create_api_page <- function() {
           class = "btn-group",
           tags$a(
             href = "/api/datasets/mtcars/data?limit=5",
-            class = "btn btn-info btn-sm",
-            "mtcars (5 rows) →"
+            class = "btn btn-outline-dark btn-sm",
+            tags$span(
+              "mtcars (5 rows) ",
+              tags$i(class = "bi bi-arrow-right")
+            )
           ),
           tags$a(
             href = "/api/datasets/iris/data?limit=10",
-            class = "btn btn-info btn-sm",
-            "iris (10 rows) →"
+            class = "btn btn-outline-dark btn-sm",
+            tags$span(
+              "iris (10 rows) ",
+              tags$i(class = "bi bi-arrow-right")
+            )
           )
         )
       )
     ),
 
     tags$div(
-      class = "mt-4 p-4 bg-light rounded",
+      class = "mt-4 p-4 bg-light shadow-sm rounded",
       tags$h4(
+        class = "text-success",
         tags$i(class = "bi bi-lightbulb"),
         "Note"
       ),
@@ -510,8 +537,7 @@ create_api_page <- function() {
         tags$code("curl"),
         " or browser extensions to format it nicely."
       ),
-      tags$div(
-        class = "code-sample",
+      tags$code(
         "curl http://localhost:3000/api/datasets/mtcars | jq ."
       )
     )
@@ -531,7 +557,10 @@ create_error_page <- function(title, message) {
       tags$a(
         href = "/",
         class = "btn btn-primary",
-        "← Back to Home"
+        tags$span(
+          tags$i(class = "bi bi-arrow-left"),
+          "Back to Home"
+        )
       )
     )
   )

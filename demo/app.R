@@ -95,22 +95,7 @@ app$get("/api/datasets/:name/summary", api_dataset_summary_get)
 api_data_get <- function(req, res) {
   dataset_name <- req$params$name
 
-  limit <- req$query$limit
-  if (!is.null(limit)) {
-    limit <- as.numeric(limit)
-    if (is.na(limit) || limit <= 0) {
-      response <- list(
-        error = "Invalid limit parameter",
-        message = "Limit must be a positive number"
-      )
-      res$status <- 404L
-      return(res$json(response))
-    }
-  }
-
-  data <- get_dataset_data(dataset_name, limit)
-
-  if (is.null(data)) {
+  if (!dataset_name %in% c("mtcars", "iris", "airquality")) {
     response <- list(
       error = "Dataset not found",
       message = sprintf(
@@ -121,6 +106,21 @@ api_data_get <- function(req, res) {
     res$status <- 404L
     return(res$json(response))
   }
+
+  limit <- req$query$limit
+  if (!is.null(limit)) {
+    limit <- as.integer(limit)
+    if (is.na(limit) || limit <= 0) {
+      response <- list(
+        error = "Invalid limit parameter",
+        message = "Limit must be a positive number"
+      )
+      res$status <- 400L
+      return(res$json(response))
+    }
+  }
+
+  data <- get_dataset_data(dataset_name, limit)
 
   res$json(list(
     dataset = dataset_name,
