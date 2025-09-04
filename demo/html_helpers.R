@@ -169,6 +169,103 @@ create_dataset_page <- function(dataset_name) {
 
   info <- summary_data$dataset_info
 
+  numerics_div <- NULL
+  numerics_div_class <- "col-lg-12"
+  if (length(summary_data$factor_summary)) {
+    numerics_div_class <- "col-lg-8"
+  }
+
+  if (length(summary_data$numeric_summary)) {
+    numerics_div <- tags$div(
+      class = numerics_div_class,
+      tags$h3(
+        tags$i(class = "bi bi-graph-up"),
+        "Numeric Columns"
+      ),
+      tags$div(
+        class = "table-responsive",
+        tags$table(
+          class = "table table-striped stats-table",
+          tags$thead(
+            class = "table-dark",
+            tags$tr(
+              tags$th("Column"),
+              tags$th("Mean"),
+              tags$th("Median"),
+              tags$th("Std Dev"),
+              tags$th("Min"),
+              tags$th("Max"),
+              tags$th("Missing")
+            )
+          ),
+          tags$tbody(
+            lapply(summary_data$numeric_summary, function(stat) {
+              tags$tr(
+                tags$td(tags$code(stat$column)),
+                tags$td(stat$mean),
+                tags$td(stat$median),
+                tags$td(stat$sd),
+                tags$td(stat$min),
+                tags$td(stat$max),
+                tags$td(
+                  if (stat$na_count > 0) {
+                    tags$span(
+                      class = "text-warning",
+                      stat$na_count
+                    )
+                  } else {
+                    tags$span(class = "text-success", "0")
+                  }
+                )
+              )
+            })
+          )
+        )
+      )
+    )
+  }
+
+  factors_div <- NULL
+  factors_div_class <- "col-lg-12"
+  if (length(summary_data$numeric_summary)) {
+    factors_div_class <- "col-lg-4"
+  }
+
+  if (length(summary_data$factor_summary)) {
+    factors_div <- tags$div(
+      class = factors_div_class,
+      tags$h3(
+        tags$i(class = "bi bi-tags"),
+        "Categorical Columns"
+      ),
+      lapply(summary_data$factor_summary, function(stat) {
+        tags$div(
+          class = "card mb-3",
+          tags$div(
+            class = "card-body",
+            tags$h6(
+              class = "card-title",
+              tags$code(stat$column)
+            ),
+            tags$p(
+              class = "card-text",
+              tags$small(
+                sprintf("%d unique values", stat$unique_count)
+              ),
+              tags$br(),
+              tags$strong("Most common: "),
+              sprintf(
+                "'%s' (%d times)",
+                stat$most_common,
+                stat$most_common_count
+              )
+            )
+          )
+        )
+      })
+    )
+  }
+
   content <- tagList(
     tags$nav(
       "aria-label" = "breadcrumb",
@@ -227,91 +324,8 @@ create_dataset_page <- function(dataset_name) {
 
     tags$div(
       class = "row",
-
-      if (length(summary_data$numeric_summary) > 0) {
-        tags$div(
-          class = "col-lg-8",
-          tags$h3(
-            tags$i(class = "bi bi-graph-up"),
-            "Numeric Columns"
-          ),
-          tags$div(
-            class = "table-responsive",
-            tags$table(
-              class = "table table-striped stats-table",
-              tags$thead(
-                class = "table-dark",
-                tags$tr(
-                  tags$th("Column"),
-                  tags$th("Mean"),
-                  tags$th("Median"),
-                  tags$th("Std Dev"),
-                  tags$th("Min"),
-                  tags$th("Max"),
-                  tags$th("Missing")
-                )
-              ),
-              tags$tbody(
-                lapply(summary_data$numeric_summary, function(stat) {
-                  tags$tr(
-                    tags$td(tags$code(stat$column)),
-                    tags$td(stat$mean),
-                    tags$td(stat$median),
-                    tags$td(stat$sd),
-                    tags$td(stat$min),
-                    tags$td(stat$max),
-                    tags$td(
-                      if (stat$na_count > 0) {
-                        tags$span(
-                          class = "text-warning",
-                          stat$na_count
-                        )
-                      } else {
-                        tags$span(class = "text-success", "0")
-                      }
-                    )
-                  )
-                })
-              )
-            )
-          )
-        )
-      },
-
-      if (length(summary_data$factor_summary) > 0) {
-        tags$div(
-          class = "col-lg-4",
-          tags$h3(
-            tags$i(class = "bi bi-tags"),
-            "Categorical Columns"
-          ),
-          lapply(summary_data$factor_summary, function(stat) {
-            tags$div(
-              class = "card mb-3",
-              tags$div(
-                class = "card-body",
-                tags$h6(
-                  class = "card-title",
-                  tags$code(stat$column)
-                ),
-                tags$p(
-                  class = "card-text",
-                  tags$small(
-                    sprintf("%d unique values", stat$unique_count)
-                  ),
-                  tags$br(),
-                  tags$strong("Most common: "),
-                  sprintf(
-                    "'%s' (%d times)",
-                    stat$most_common,
-                    stat$most_common_count
-                  )
-                )
-              )
-            )
-          })
-        )
-      }
+      numerics_div,
+      factors_div
     ),
 
     tags$div(
@@ -332,7 +346,7 @@ create_dataset_page <- function(dataset_name) {
 
 #' Create a data table
 create_data_table <- function(data) {
-  if (is.null(data) || nrow(data) == 0) {
+  if (!nrow(data)) {
     return(tags$p("No data available."))
   }
 
