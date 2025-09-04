@@ -167,12 +167,9 @@ create_homepage <- function() {
 
 #' Create dataset detail page
 #'
-#' @param dataset_name String. Dataset to build page for.
-#'        Either 'mtcars', 'iris', or 'airquality'
+#' @param summary_data Named list. See [get_dataset_summary()].
 #' @return [htmltools::tags]
-create_dataset_page <- function(dataset_name) {
-  summary_data <- get_dataset_summary(dataset_name)
-
+create_dataset_page <- function(summary_data) {
   info <- summary_data$dataset_info
 
   numerics_div <- NULL

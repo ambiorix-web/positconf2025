@@ -41,7 +41,8 @@ dataset_html_get <- function(req, res) {
     return(res$send(html))
   }
 
-  html_content <- create_dataset_page(dataset_name)
+  summary_data <- get_dataset_summary(dataset_name)
+  html_content <- create_dataset_page(summary_data)
   res$send(html_content)
 }
 
@@ -95,7 +96,7 @@ app$get("/api/datasets/:name/summary", api_dataset_summary_get)
 api_data_get <- function(req, res) {
   dataset_name <- req$params$name
 
-  if (!dataset_name %in% c("mtcars", "iris", "airquality")) {
+  if (!is_valid_dataset(dataset_name)) {
     response <- list(
       error = "Dataset not found",
       message = sprintf(
