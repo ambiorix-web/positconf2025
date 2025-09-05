@@ -171,6 +171,7 @@ create_homepage <- function() {
 #' @return [htmltools::tags]
 create_dataset_page <- function(summary_data) {
   info <- summary_data$dataset_info
+  dataset_name <- info$name
 
   numerics_div <- NULL
   numerics_div_class <- "col-lg-12"
